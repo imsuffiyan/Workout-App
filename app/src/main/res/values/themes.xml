@@ -1,7 +1,38 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
-    <style name="Theme.WorkoutApp" parent="Theme.Material3.DayNight.NoActionBar">
-        <item name="colorPrimary">@color/primaryColor</item>
-        <item name="colorSecondary">@color/secondaryColor</item>
-        <item name="android:statusBarColor" tools:targetApi="l">@color/primaryColor</item>
+    <!-- Base application theme. -->
+    <style name="Base.Theme.Workout" parent="Theme.Material3.DayNight.NoActionBar">
+        <item name="android:statusBarColor">@color/accent_orange</item>
+        <item name="android:windowLightStatusBar">false</item>
+        <item name="android:windowOptOutEdgeToEdgeEnforcement" tools:targetApi="35">true</item>
+
+        <!-- Color tokens -->
+        <item name="colorPrimary">@color/accent_orange</item>
+        <item name="colorOnPrimary">@color/white</item>
+        <item name="colorSecondary">@color/white</item>
+        <item name="colorSurface">@color/white</item>
+        <item name="android:textColor">@color/text_primary</item>
+        <item name="android:colorAccent">@color/accent_orange</item>
+
+        <!-- Buttons -->
+        <item name="buttonStyle">@style/Widget.Workout.Button</item>
+    </style>
+
+    <style name="Theme.Workout" parent="Base.Theme.Workout" />
+
+    <!-- Small reusable button style -->
+    <style name="Widget.Workout.Button" parent="Widget.Material3.Button">
+        <item name="android:backgroundTint">@color/accent_orange</item>
+        <item name="android:textColor">@color/white</item>
+        <item name="android:paddingLeft">16dp</item>
+        <item name="android:paddingRight">16dp</item>
+    </style>
+
+    <!-- Text appearances -->
+    <style name="Workout.Title" parent="TextAppearance.Material3.HeadlineSmall">
+        <item name="android:textColor">@color/text_primary</item>
+    </style>
+
+    <style name="Workout.Body" parent="TextAppearance.Material3.BodyMedium">
+        <item name="android:textColor">@color/text_secondary</item>
     </style>
 </resources>

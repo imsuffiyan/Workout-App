@@ -1,0 +1,11 @@
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="18dp"
+    android:height="18dp"
+    android:viewportWidth="24"
+    android:viewportHeight="24">
+    <!-- Simple clock icon: circle + two hands -->
+    <path
+        android:fillColor="#616161"
+        android:pathData="M12,2A10,10 0 1,0 22,12A10,10 0 0,0 12,2zM12,4a8,8 0 1,1 0,16a8,8 0 0,1 0,-16zM12.5,7h-1v6l5,2l0.5,-0.86L12.5,12V7z" />
+</vector>
+

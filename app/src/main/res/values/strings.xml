@@ -1,3 +1,160 @@
 <resources>
-    <string name="app_name">Swift Flyers Workout</string>
+    <string name="app_name">Workout</string>
+    <string name="profile_avatar">Profile avatar</string>
+    <string name="name">Name</string>
+    <string name="age">Age</string>
+    <string name="target_weight">Target Weight (kg/lb)</string>
+    <string name="workout_reminders">Workout reminders</string>
+    <string name="save">Save</string>
+
+    <!-- profile-specific aliases used by layout -->
+    <string name="profile_name">Name</string>
+    <string name="profile_age">Age</string>
+    <string name="profile_target_weight">Target Weight (kg/lb)</string>
+    <string name="profile_workout_reminders">Workout reminders</string>
+    <string name="profile_save">Save</string>
+
+    <!-- Details screen -->
+    <string name="profile_purpose">Purpose</string>
+    <string name="profile_units">Units</string>
+    <string name="profile_height">Height</string>
+    <string name="profile_current_weight">Current Weight</string>
+    <string name="profile_target_weight_label">Target Weight</string>
+    <string name="title_my_profile">My Profile</string>
+    <string name="edit">Edit</string>
+    <string name="enter_value">Enter value</string>
+    <string name="saved">Saved</string>
+
+    <!-- Bottom nav labels and dashboard placeholders -->
+    <string name="bottom_workouts">Home</string>
+    <string name="bottom_progress">Recipes</string>
+    <string name="bottom_more">More</string>
+    <string name="water_placeholder">0 ml</string>
+
+    <!-- UI strings added for category and detail screens -->
+    <string name="back">Back</string>
+    <string name="category_default">Category</string>
+    <string name="workout_title">Workout Title</string>
+    <string name="describe_text">Lift, tighten, and tone your glutes using only your bodyweight. No dumbbells, just pure muscle activation.</string>
+    <string name="calorie_burn">Calorie Burn</string>
+    <string name="yoga_mat">Yoga Mat</string>
+    <string name="instructor_label">Monse Hemmer</string>
+    <string name="instructor_bio">Hello! I\'m Monse Hemmer. A fitness instructor for over 15 years…</string>
+    <string name="exercises_count">15 Exercises</string>
+    <string name="glute_bridge">GLUTE BRIDGE</string>
+    <string name="start">Start</string>
+    <string name="workout_thumbnail_cd">workout thumbnail</string>
+    <string name="fire_cd">fire</string>
+    <string name="header_image_cd">header image</string>
+    <string name="level_beginner">Beginner</string>
+    <string name="level_intermediate">Intermediate</string>
+    <string name="level_advanced">Advanced</string>
+    <string name="done">Done</string>
+    <string name="calories_format">%1$d kcal</string>
+    <string name="timer_default">00:00</string>
+    <string name="exercise_meta_format">%1$s • %2$d kcal</string>
+    <string name="exercise_explanation">Exercise Explanation:</string>
+    <string name="exercise_instructions_placeholder">Detailed exercise instructions go here.</string>
+    <string name="exercise_meta_placeholder">00:30 • 8.0 kcal</string>
+    <string name="exercise_thumb_cd">exercise thumbnail</string>
+    <string name="exercise_item_title">Exercise</string>
+    <string name="focus_area">Focus Area</string>
+    <string name="booty">Booty</string>
+    <string name="booty_image_cd">Booty image</string>
+    <string name="leg">Leg</string>
+    <string name="leg_image_cd">Leg image</string>
+    <string name="abs">Abs</string>
+    <string name="abs_image_cd">Abs image</string>
+    <string name="shoulder">Shoulder</string>
+    <string name="shoulder_image_cd">Shoulder image</string>
+
+    <string name="popular_recipe_plans">Popular Recipe Plans</string>
+    <string name="plan_1500">1500kcal</string>
+    <string name="plan_1500_image_cd">1500kcal image</string>
+    <string name="reduced_fat">Reduced-Fat</string>
+    <string name="reduced_fat_image_cd">Reduced-Fat image</string>
+    <string name="carb_lite">Carb-Lite</string>
+    <string name="carb_lite_image_cd">Carb-Lite image</string>
+    <string name="veggie_bliss">Veggie Bliss</string>
+    <string name="veggie_bliss_image_cd">Veggie Bliss image</string>
+
+    <!-- Focus area subtitles -->
+    <string name="leg_sub"><![CDATA[Power, strength & endurance]]></string>
+    <string name="abs_sub">Core stability and definition</string>
+    <string name="shoulder_sub"><![CDATA[Healthy shoulders & overhead strength]]></string>
+
+    <!-- Plan subtitles -->
+    <string name="plan_1500_sub">High calorie-burn circuits</string>
+    <string name="reduced_fat_sub">Sustainable fat-loss plans</string>
+    <string name="carb_lite_sub">Low-carb friendly conditioning</string>
+    <string name="veggie_bliss_sub"><![CDATA[Gentle mobility & flow]]></string>
+    <string name="booty_sub"><![CDATA[Glute-focused strength & tone]]></string>
+
+    <string name="today">Today</string>
+    <string name="today_clock_cd">Current time</string>
+
+    <!-- Program / 21-day challenge strings -->
+    <string name="program_title">21 Day Challenge</string>
+    <string name="program_image_cd">program image</string>
+    <string name="program_progress_default">1/21</string>
+    <string name="program_day_header">Day %1$d</string>
+    <string name="program_exercises_for_today">Exercises for today</string>
+    <string name="complete_day">Complete Day</string>
+    <string name="program_finished">Program finished</string>
+
+    <!-- New strings for slimmer program look -->
+    <string name="slimmer_title">Slimmer You in 21 Days!</string>
+    <string name="continue_label">CONTINUE</string>
+    <string name="program_day_label">DAY %1$d/%2$d</string>
+    <string name="day_header_format">Day %1$d</string>
+    <string name="exercises_count_format">%1$d Exercises</string>
+
+    <!-- Added strings for the home fragment updated layout -->
+    <string name="day_label">DAY</string>
+    <string name="day_counter">3 / 21</string>
+    <string name="timer_difficulty">02:00  |  Beginner</string>
+    <string name="timer_cd">timer</string>
+    <string name="play_cd">play</string>
+    <string name="exercise_cd">exercise</string>
+    <string name="exercise_video_cd">exercise video</string>
+
+    <string name="workouts_label">Workouts</string>
+    <string name="calories_label">kcal</string>
+    <string name="minutes_label">min</string>
+    <string name="ml_label">ml</string>
+
+    <string name="add_weight_cd">Add weight</string>
+    <string name="add_water_cd">Add water</string>
+
+    <string name="weight">Weight</string>
+    <string name="water">Water</string>
+
+    <string name="general_settings">General Settings</string>
+    <string name="my_profile">My Profile</string>
+    <string name="my_history">My History</string>
+    <string name="our_coach">Our Coach</string>
+    <string name="zero">0</string>
+    <string name="zero_decimal">0.0</string>
+    <string name="unit_lb_ft">lb/ft</string>
+    <string name="unit_kg_m">kg/m</string>
+    <string name="units_dialog_title">Choose units</string>
+    <string name="units_dialog_subtitle">Select the measurement units for weight and height.</string>
+    <string name="cancel">Cancel</string>
+    <string name="more_options_cd">More options</string>
+    <string name="history_cd">History</string>
+    <string name="help_cd">Help</string>
+
+    <!-- Strings for program fragment -->
+    <string name="slimmer_description">Sculpt your curves &amp; BLAST stubborn fat.</string>
+    <string name="calorie_value">32.0 kcal</string>
+    <string name="ad_button_label">Asaal Krin</string>
+    <string name="ad_special_offer">Special offer</string>
+
+    <!-- Placeholder for exercise duration -->
+    <string name="duration_placeholder">00:20</string>
+    <string name="description">Description</string>
+    <string name="describe">Describe</string>
+    <string name="take_action">Take Action</string>
+    <string name="water_default">275</string>
+    <string name="let_s_start">Let\'s Start</string>
 </resources>

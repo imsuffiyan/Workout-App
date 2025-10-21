@@ -1,0 +1,241 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+     xmlns:app="http://schemas.android.com/apk/res-auto"
+     xmlns:tools="http://schemas.android.com/tools"
+     android:layout_width="match_parent"
+     android:layout_height="match_parent"
+     android:padding="16dp"
+     android:background="@drawable/bg_theme_gradient">
+
+
+    <TextView
+        android:id="@+id/tvProgramHeader"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="@string/slimmer_title"
+        android:textSize="20sp"
+        android:textStyle="bold"
+        android:textColor="@color/text_primary"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
+
+    <LinearLayout
+        android:id="@+id/programInfoRow"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:paddingTop="8dp"
+        app:layout_constraintTop_toBottomOf="@+id/tvProgramHeader"
+        android:gravity="center_vertical">
+
+        <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/icTimerSmall"
+            android:layout_width="16dp"
+            android:layout_height="16dp"
+            android:src="@drawable/ic_timer"
+            android:tint="@color/text_secondary"
+            android:contentDescription="@string/fire_cd" />
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/timer"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/timer_default"
+            android:textSize="12sp"
+            android:textColor="@color/text_secondary"
+            android:layout_marginStart="6dp" />
+
+        <View android:layout_width="12dp" android:layout_height="1dp" />
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/tvLevel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/level_beginner"
+            android:textSize="12sp"
+            android:textColor="@color/text_secondary" />
+
+        <View android:layout_width="12dp" android:layout_height="1dp" />
+
+        <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/icTag"
+            android:layout_width="14dp"
+            android:layout_height="14dp"
+            android:src="@drawable/ic_workout"
+            android:tint="@color/text_secondary"
+            android:contentDescription="@string/workout_thumbnail_cd" />
+
+    </LinearLayout>
+
+    <!-- Subtitle used by ProgramFragment -->
+    <TextView
+        android:id="@+id/tvProgramSub"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="@string/program_exercises_for_today"
+        tools:text="Exercises for today"
+        android:textSize="14sp"
+        android:textColor="@color/black"
+        android:layout_marginTop="10dp"
+        app:layout_constraintTop_toBottomOf="@id/programInfoRow"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
+
+    <TextView
+        android:id="@+id/tvDesc"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="@string/describe"
+        android:textSize="16sp"
+        android:textStyle="bold"
+        android:layout_marginTop="10dp"
+        app:layout_constraintTop_toBottomOf="@id/tvProgramSub"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
+
+    <!-- Brief description below the title -->
+    <TextView
+        android:id="@+id/tvProgramDescription"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="@string/slimmer_description"
+        android:textSize="14sp"
+        android:layout_marginTop="3dp"
+        android:textColor="@color/text_secondary"
+
+        app:layout_constraintTop_toBottomOf="@id/tvDesc"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
+
+    <LinearLayout
+        android:id="@+id/infoRow"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_marginTop="12dp"
+        app:layout_constraintTop_toBottomOf="@id/tvProgramDescription"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:gravity="center_vertical">
+
+        <androidx.cardview.widget.CardView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:cardCornerRadius="8dp"
+            app:cardElevation="1dp"
+            android:clickable="true"
+            android:foreground="?attr/selectableItemBackground"
+            android:layout_marginEnd="8dp">
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:paddingHorizontal="15dp"
+                android:paddingVertical="10dp"
+                android:gravity="center_vertical">
+
+                <androidx.appcompat.widget.AppCompatImageView
+                    android:id="@+id/icFire"
+                    android:layout_width="18dp"
+                    android:layout_height="18dp"
+                    android:src="@drawable/ic_fire"
+                    android:tint="@color/accent_orange"
+                    android:contentDescription="@string/fire_cd" />
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:layout_marginStart="8dp">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/calorie_burn"
+                        android:textColor="#616161"
+                        android:textSize="12sp" />
+
+                    <TextView
+                        android:id="@+id/tvCalorieValue"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/calorie_value"
+                        android:textStyle="bold"
+                        android:textColor="#212121"
+                        android:textSize="14sp" />
+                </LinearLayout>
+
+            </LinearLayout>
+        </androidx.cardview.widget.CardView>
+
+        <androidx.cardview.widget.CardView
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            app:cardCornerRadius="8dp"
+            app:cardElevation="1dp"
+            android:clickable="true"
+            android:foreground="?attr/selectableItemBackground">
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:paddingHorizontal="15dp"
+                android:layout_gravity="center_vertical">
+
+                <androidx.appcompat.widget.AppCompatImageView
+                    android:layout_width="18dp"
+                    android:layout_height="18dp"
+                    android:src="@drawable/ic_yoga_mat" />
+
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="8dp"
+                    android:text="@string/yoga_mat"
+                    android:textSize="12sp"
+                    android:textStyle="bold"
+                    android:textColor="@color/text_primary" />
+
+            </LinearLayout>
+        </androidx.cardview.widget.CardView>
+
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/tvProgramDay"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        tools:text="Day 1"
+        android:textSize="16sp"
+        android:textStyle="bold"
+        android:layout_marginTop="10dp"
+        app:layout_constraintTop_toBottomOf="@id/infoRow"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
+    <!-- Exercises list -->
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rvExercises"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layout_constraintTop_toBottomOf="@id/tvProgramDay"
+        app:layout_constraintBottom_toTopOf="@id/btnCompleteDay"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginTop="12dp"
+        tools:listitem="@layout/item_program" />
+
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/btnCompleteDay"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="@string/complete_day"
+        android:enabled="false"
+        android:background="@drawable/btn_rounded_primary"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

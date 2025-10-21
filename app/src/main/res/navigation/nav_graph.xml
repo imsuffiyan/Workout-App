@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/nav_graph"
+    app:startDestination="@id/homeFragment">
+
+    <fragment
+        android:id="@+id/homeFragment"
+        android:name="com.fitness.workout.ui.home.HomeFragment"
+        android:label="Home">
+        <action
+            android:id="@+id/action_homeFragment_to_categoryFragment"
+            app:destination="@id/categoryFragment" />
+        <action
+            android:id="@+id/action_homeFragment_to_workoutDetailFragment"
+            app:destination="@id/workoutDetailFragment"
+            app:enterAnim="@anim/nav_default_enter_anim"
+            app:exitAnim="@anim/nav_default_exit_anim" />
+        <action
+            android:id="@+id/action_homeFragment_to_programFragment"
+            app:destination="@id/programFragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/categoryFragment"
+        android:name="com.fitness.workout.ui.home.CategoryFragment"
+        android:label="Category">
+        <argument
+            android:name="categoryName"
+            app:argType="string" />
+        <action
+            android:id="@+id/action_categoryFragment_to_workoutDetailFragment"
+            app:destination="@id/workoutDetailFragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/workoutDetailFragment"
+        android:name="com.fitness.workout.ui.workouts.WorkoutDetailFragment"
+        android:label="Workout Detail">
+        <argument
+            android:name="workoutId"
+            app:argType="integer" />
+        <!-- action to exercise detail -->
+        <action
+            android:id="@+id/action_workoutDetailFragment_to_exerciseDetailFragment"
+            app:destination="@id/exerciseDetailFragment" />
+        <!-- action to open player screen -->
+        <action
+            android:id="@+id/action_workoutDetailFragment_to_workoutPlayerFragment"
+            app:destination="@id/workoutPlayerFragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/workoutPlayerFragment"
+        android:name="com.fitness.workout.ui.workouts.WorkoutPlayerFragment"
+        android:label="Workout Player">
+        <argument
+            android:name="workoutId"
+            app:argType="integer" />
+        <action
+            android:id="@+id/action_workoutPlayerFragment_to_exerciseDetailFragment"
+            app:destination="@id/exerciseDetailFragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/exerciseDetailFragment"
+        android:name="com.fitness.workout.ui.workouts.ExerciseDetailFragment"
+        android:label="Exercise Detail">
+        <argument
+            android:name="exercise"
+            app:argType="com.fitness.workout.data.model.Exercise" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/programFragment"
+        android:name="com.fitness.workout.ui.program.ProgramFragment"
+        android:label="Program" />
+
+    <fragment
+        android:id="@+id/progressFragment"
+        android:name="com.fitness.workout.ui.progress.ProgressFragment"
+        android:label="Progress" />
+
+    <fragment
+        android:id="@+id/moreFragment"
+        android:name="com.fitness.workout.ui.more.MoreFragment"
+        android:label="More">
+        <action
+            android:id="@+id/action_moreFragment_to_profileDetailsFragment"
+            app:destination="@id/profileDetailsFragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/profileDetailsFragment"
+        android:name="com.fitness.workout.ui.profile.ProfileDetailsFragment"
+        android:label="Profile Details" />
+</navigation>

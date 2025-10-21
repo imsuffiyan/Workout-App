@@ -1,0 +1,335 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/bg_theme_gradient"
+    android:padding="16dp"
+    tools:context="com.fitness.workout.ui.profile.ProfileDetailsFragment">
+
+    <ImageButton
+        android:id="@+id/btnProfileInfo"
+        android:layout_width="44dp"
+        android:layout_height="44dp"
+        android:background="@drawable/icon_circle_bg"
+        android:src="@drawable/ic_info"
+        android:contentDescription="@string/exercise_explanation"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_margin="12dp" />
+
+    <ScrollView
+        android:id="@+id/scrollViewInner"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:fillViewport="true"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+
+            <!-- Reusable row card -->
+            <com.google.android.material.card.MaterialCardView
+                android:id="@+id/rowAge"
+                android:layout_width="match_parent"
+                android:layout_height="56dp"
+                app:cardCornerRadius="12dp"
+                android:layout_marginBottom="10dp"
+                android:clickable="true"
+                android:foreground="?attr/selectableItemBackground">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical"
+                    android:paddingStart="16dp"
+                    android:paddingEnd="12dp">
+
+                    <com.google.android.material.textview.MaterialTextView
+                        android:id="@+id/tvAgeLabel"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="@string/profile_age"
+                        android:textAppearance="?attr/textAppearanceBodyLarge"
+                        android:textColor="@color/text_primary" />
+
+                    <com.google.android.material.textview.MaterialTextView
+                        android:id="@+id/tvAgeValue"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text=""
+                        tools:text="30"
+                        android:textAppearance="?attr/textAppearanceBodyLarge"
+                        android:paddingStart="8dp"
+                        android:paddingEnd="8dp"
+                        android:textColor="@color/text_primary" />
+
+                    <ImageView
+                        android:id="@+id/icEditAge"
+                        android:layout_width="20dp"
+                        android:layout_height="20dp"
+                        android:src="@android:drawable/ic_menu_edit"
+                        app:tint="?attr/colorPrimary"
+                        android:contentDescription="@string/edit" />
+
+                </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
+
+            <!-- Purpose -->
+            <com.google.android.material.card.MaterialCardView
+                android:id="@+id/rowPurpose"
+                android:layout_width="match_parent"
+                android:layout_height="56dp"
+                app:cardCornerRadius="12dp"
+                android:layout_marginBottom="10dp"
+                android:clickable="true"
+                android:foreground="?attr/selectableItemBackground">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical"
+                    android:paddingStart="16dp"
+                    android:paddingEnd="12dp">
+
+                    <com.google.android.material.textview.MaterialTextView
+                        android:id="@+id/tvPurposeLabel"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="@string/profile_purpose"
+                        android:textAppearance="?attr/textAppearanceBodyLarge"
+                        android:textColor="@color/text_primary" />
+
+                    <com.google.android.material.textview.MaterialTextView
+                        android:id="@+id/tvPurposeValue"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text=""
+                        tools:text="Stay Healthy"
+                        android:textAppearance="?attr/textAppearanceBodyLarge"
+                        android:paddingStart="8dp"
+                        android:paddingEnd="8dp"
+                        android:textColor="@color/text_primary" />
+
+                    <ImageView
+                        android:id="@+id/icEditPurpose"
+                        android:layout_width="20dp"
+                        android:layout_height="20dp"
+                        android:src="@android:drawable/ic_menu_edit"
+                        app:tint="?attr/colorPrimary"
+                        android:contentDescription="@string/edit" />
+
+                </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
+
+            <!-- Units -->
+            <com.google.android.material.card.MaterialCardView
+                android:id="@+id/rowUnits"
+                android:layout_width="match_parent"
+                android:layout_height="56dp"
+                app:cardCornerRadius="12dp"
+                android:layout_marginBottom="10dp"
+                android:clickable="true"
+                android:foreground="?attr/selectableItemBackground">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical"
+                    android:paddingStart="16dp"
+                    android:paddingEnd="12dp">
+
+                    <com.google.android.material.textview.MaterialTextView
+                        android:id="@+id/tvUnitsLabel"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="@string/profile_units"
+                        android:textAppearance="?attr/textAppearanceBodyLarge"
+                        android:textColor="@color/text_primary" />
+
+                    <com.google.android.material.textview.MaterialTextView
+                        android:id="@+id/tvUnitsValue"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text=""
+                        tools:text="lb/ft"
+                        android:textAppearance="?attr/textAppearanceBodyLarge"
+                        android:paddingStart="8dp"
+                        android:paddingEnd="8dp"
+                        android:textColor="@color/text_primary" />
+
+                    <ImageView
+                        android:id="@+id/icEditUnits"
+                        android:layout_width="20dp"
+                        android:layout_height="20dp"
+                        android:src="@android:drawable/ic_menu_edit"
+                        app:tint="?attr/colorPrimary"
+                        android:contentDescription="@string/edit" />
+
+                </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
+
+            <!-- Height -->
+            <com.google.android.material.card.MaterialCardView
+                android:id="@+id/rowHeight"
+                android:layout_width="match_parent"
+                android:layout_height="56dp"
+                app:cardCornerRadius="12dp"
+                android:layout_marginBottom="10dp"
+                android:clickable="true"
+                android:foreground="?attr/selectableItemBackground">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical"
+                    android:paddingStart="16dp"
+                    android:paddingEnd="12dp">
+
+                    <com.google.android.material.textview.MaterialTextView
+                        android:id="@+id/tvHeightLabel"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="@string/profile_height"
+                        android:textAppearance="?attr/textAppearanceBodyLarge"
+                        android:textColor="@color/text_primary" />
+
+                    <com.google.android.material.textview.MaterialTextView
+                        android:id="@+id/tvHeightValue"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text=""
+                        tools:text="5' 4&quot;"
+                        android:textAppearance="?attr/textAppearanceBodyLarge"
+                        android:paddingStart="8dp"
+                        android:paddingEnd="8dp"
+                        android:textColor="@color/text_primary" />
+
+                    <ImageView
+                        android:id="@+id/icEditHeight"
+                        android:layout_width="20dp"
+                        android:layout_height="20dp"
+                        android:src="@android:drawable/ic_menu_edit"
+                        app:tint="?attr/colorPrimary"
+                        android:contentDescription="@string/edit" />
+
+                </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
+
+            <!-- Current Weight -->
+            <com.google.android.material.card.MaterialCardView
+                android:id="@+id/rowCurrentWeight"
+                android:layout_width="match_parent"
+                android:layout_height="56dp"
+                app:cardCornerRadius="12dp"
+                android:layout_marginBottom="10dp"
+                android:clickable="true"
+                android:foreground="?attr/selectableItemBackground">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical"
+                    android:paddingStart="16dp"
+                    android:paddingEnd="12dp">
+
+                    <com.google.android.material.textview.MaterialTextView
+                        android:id="@+id/tvCurrentLabel"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="@string/profile_current_weight"
+                        android:textAppearance="?attr/textAppearanceBodyLarge"
+                        android:textColor="@color/text_primary" />
+
+                    <com.google.android.material.textview.MaterialTextView
+                        android:id="@+id/tvCurrentValue"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text=""
+                        tools:text="177.9 lbs"
+                        android:textAppearance="?attr/textAppearanceBodyLarge"
+                        android:paddingStart="8dp"
+                        android:paddingEnd="8dp"
+                        android:textColor="@color/text_primary" />
+
+                    <ImageView
+                        android:id="@+id/icEditCurrent"
+                        android:layout_width="20dp"
+                        android:layout_height="20dp"
+                        android:src="@android:drawable/ic_menu_edit"
+                        app:tint="?attr/colorPrimary"
+                        android:contentDescription="@string/edit" />
+
+                </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
+
+            <!-- Target Weight -->
+            <com.google.android.material.card.MaterialCardView
+                android:id="@+id/rowTargetWeight"
+                android:layout_width="match_parent"
+                android:layout_height="56dp"
+                app:cardCornerRadius="12dp"
+                android:layout_marginBottom="10dp"
+                android:clickable="true"
+                android:foreground="?attr/selectableItemBackground">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical"
+                    android:paddingStart="16dp"
+                    android:paddingEnd="12dp">
+
+                    <com.google.android.material.textview.MaterialTextView
+                        android:id="@+id/tvTargetLabel"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="@string/profile_target_weight_label"
+                        android:textAppearance="?attr/textAppearanceBodyLarge"
+                        android:textColor="@color/text_primary" />
+
+                    <com.google.android.material.textview.MaterialTextView
+                        android:id="@+id/tvTargetValue"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text=""
+                        tools:text="159.0 lbs"
+                        android:textAppearance="?attr/textAppearanceBodyLarge"
+                        android:paddingStart="8dp"
+                        android:paddingEnd="8dp"
+                        android:textColor="@color/text_primary" />
+
+                    <ImageView
+                        android:id="@+id/icEditTarget"
+                        android:layout_width="20dp"
+                        android:layout_height="20dp"
+                        android:src="@android:drawable/ic_menu_edit"
+                        app:tint="?attr/colorPrimary"
+                        android:contentDescription="@string/edit" />
+
+                </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
+
+        </LinearLayout>
+    </ScrollView>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

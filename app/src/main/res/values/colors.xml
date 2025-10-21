@@ -1,6 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="primaryColor">#FF6B6B</color>
-    <color name="secondaryColor">#4ECDC4</color>
-    <color name="backgroundColor">#FFF8F0</color>
-    <color name="onPrimary">#FFFFFFFF</color>
+    <!-- Core colors used by layouts (accessible, vibrant) -->
+    <color name="white">#FFFFFFFF</color>
+    <color name="black">#FF000000</color>
+
+    <!-- Text colors -->
+    <color name="text_primary">#212121</color>
+    <color name="text_secondary">#757575</color>
+
+    <!-- Accent / action colors -->
+    <color name="accent_orange">#FF6A3E</color>
+    <color name="teal_700">#00796B</color>
+    <color name="purple_700">#7B1FA2</color>
+    <color name="amber_700">#FF8F00</color>
+    <color name="teal_200">#80CBC4</color>
+
+    <!-- Button primary fallback (used by some drawables) -->
+    <color name="primary_blue">#1E88E5</color>
 </resources>
