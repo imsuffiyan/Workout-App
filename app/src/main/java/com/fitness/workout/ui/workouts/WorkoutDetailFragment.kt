@@ -7,6 +7,9 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -14,6 +17,7 @@ import com.fitness.workout.R
 import com.fitness.workout.databinding.FragmentWorkoutDetailBinding
 import dagger.hilt.android.AndroidEntryPoint
 import java.util.Locale
+import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
 class WorkoutDetailFragment : Fragment() {
@@ -48,39 +52,42 @@ class WorkoutDetailFragment : Fragment() {
         binding.rvExercises.layoutManager = LinearLayoutManager(requireContext())
         binding.rvExercises.adapter = exerciseAdapter
 
-        viewModel.workout.observe(viewLifecycleOwner) { workout ->
-            if (workout == null) return@observe
+        viewLifecycleOwner.lifecycleScope.launch {
+            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
+                viewModel.detail.collect { detail ->
+                    if (detail == null) {
+                        exerciseAdapter.submitList(emptyList())
+                        binding.tvExercisesCount.text = getString(R.string.exercises_count_format, 0)
+                        return@collect
+                    }
 
-            binding.title.text = workout.title
-            binding.description.text = workout.description
-            // placeholder hero image
-            binding.heroImage.setImageResource(R.drawable.ic_launcher_foreground)
+                    val workout = detail.workout
+                    binding.title.text = workout.title
+                    binding.description.text = workout.description
+                    // placeholder hero image
+                    binding.heroImage.setImageResource(R.drawable.ic_launcher_foreground)
 
-            // set duration text
-            remainingSec = workout.durationSec
-            binding.timer.text = formatDuration(remainingSec)
+                    if (timer == null) {
+                        remainingSec = workout.durationSec
+                        binding.timer.text = formatDuration(remainingSec)
+                    }
 
-            // difficulty
-            val level = when {
-                workout.durationSec <= 150 -> getString(com.fitness.workout.R.string.level_beginner)
-                workout.durationSec <= 450 -> getString(com.fitness.workout.R.string.level_intermediate)
-                else -> getString(com.fitness.workout.R.string.level_advanced)
+                    val level = when {
+                        workout.durationSec <= 150 -> getString(com.fitness.workout.R.string.level_beginner)
+                        workout.durationSec <= 450 -> getString(com.fitness.workout.R.string.level_intermediate)
+                        else -> getString(com.fitness.workout.R.string.level_advanced)
+                    }
+                    binding.tvLevel.text = level
+
+                    val caloriesEst = workout.durationSec * 6 / 60 // per-minute-ish display
+                    binding.tvCalories.text = getString(com.fitness.workout.R.string.calories_format, caloriesEst)
+
+                    val list = detail.exercises
+                    exerciseAdapter.submitList(list)
+                    binding.tvExercisesCount.text = getString(R.string.exercises_count_format, list.size)
+                }
             }
-            binding.tvLevel.text = level
-
-            // calories estimate (same naive calc used in ViewModel)
-            val caloriesEst = workout.durationSec * 6 / 60 // per-minute-ish display
-            binding.tvCalories.text = getString(com.fitness.workout.R.string.calories_format, caloriesEst)
-
-            // load exercises for this workout
-            viewModel.loadExercises(workout.id)
         }
-
-        viewModel.exercises.observe(viewLifecycleOwner) { list ->
-            exerciseAdapter.submitList(list)
-            binding.tvExercisesCount.text = getString(R.string.exercises_count_format, list.size)
-        }
-
 
         binding.startButton.setOnClickListener {
             // if a timer is running, stop it; otherwise start for remainingSec
@@ -89,7 +96,7 @@ class WorkoutDetailFragment : Fragment() {
                 timer = null
                 binding.startButton.isEnabled = true
                 // reset display to full duration if workout loaded
-                viewModel.workout.value?.let { binding.timer.text = formatDuration(it.durationSec) }
+                viewModel.detail.value?.workout?.let { binding.timer.text = formatDuration(it.durationSec) }
             } else {
                 startTimer()
             }
@@ -100,11 +107,11 @@ class WorkoutDetailFragment : Fragment() {
             val workoutId = args.workoutId
             val action = WorkoutDetailFragmentDirections.actionWorkoutDetailFragmentToWorkoutPlayerFragment(workoutId)
             findNavController().navigate(action)
-            }
+        }
     }
 
     private fun startTimer() {
-        val durationSec = viewModel.workout.value?.durationSec ?: 30
+        val durationSec = viewModel.detail.value?.workout?.durationSec ?: 30
         binding.startButton.isEnabled = false
         // use remainingSec if it was set (allows resume), otherwise use duration
         if (remainingSec <= 0) remainingSec = durationSec
@@ -118,7 +125,7 @@ class WorkoutDetailFragment : Fragment() {
                 binding.timer.text = getString(com.fitness.workout.R.string.done)
                 binding.startButton.isEnabled = true
                 // log workout using the workout duration
-                viewModel.workout.value?.let { viewModel.logWorkout(it.durationSec) }
+                viewModel.detail.value?.workout?.let { viewModel.logWorkout(it.durationSec) }
                 timer = null
                 remainingSec = 0
             }
