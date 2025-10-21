@@ -11,8 +11,6 @@ import com.fitness.workout.util.toDurationString
 
 class ProgramExerciseAdapter : ListAdapter<Exercise, ProgramExerciseAdapter.VH>(DIFF) {
 
-    private val completedSet = mutableSetOf<Int>()
-
     companion object {
         private val DIFF = object : DiffUtil.ItemCallback<Exercise>() {
             override fun areItemsTheSame(oldItem: Exercise, newItem: Exercise) = oldItem.id == newItem.id
@@ -35,9 +33,5 @@ class ProgramExerciseAdapter : ListAdapter<Exercise, ProgramExerciseAdapter.VH>(
 
     override fun onBindViewHolder(holder: VH, position: Int) {
         holder.bind(getItem(position))
-    }
-
-    fun allCompleted(): Boolean {
-        return itemCount > 0 && completedSet.size >= itemCount
     }
 }

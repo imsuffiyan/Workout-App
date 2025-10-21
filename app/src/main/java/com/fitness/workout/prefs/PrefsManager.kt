@@ -7,12 +7,16 @@ import androidx.datastore.preferences.core.floatPreferencesKey
 import androidx.datastore.preferences.core.intPreferencesKey
 import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.datastore.preferences.preferencesDataStore
+import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
+import javax.inject.Inject
+import javax.inject.Singleton
 
 private val Context.dataStore by preferencesDataStore("user_prefs")
 
-class PrefsManager(context: Context) {
+@Singleton
+class PrefsManager @Inject constructor(@ApplicationContext context: Context) {
     private val ds = context.dataStore
 
     object Keys {
