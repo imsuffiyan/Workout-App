@@ -1,6 +1,7 @@
 package com.fitness.workout.data.repository
 
 import com.fitness.workout.data.model.Exercise
+import com.fitness.workout.data.model.Workout
 import kotlin.math.max
 
 @Suppress("unused", "MemberVisibilityCanBePrivate")
@@ -346,8 +347,31 @@ object WorkoutSeedData {
         )
     )
 
+    fun sampleWorkouts(): List<Workout> {
+        var idCounter = 1
+        return buildList {
+            categoryMeta.forEach { (category, meta) ->
+                meta.titles.forEachIndexed { index, title ->
+                    val description = meta.descriptions.getOrElse(index) { "Effective workout." }
+                    val duration = meta.durations.getOrElse(index) { 600 }
+                    val count = meta.counts.getOrElse(index) { 8 }
+                    add(
+                        Workout(
+                            id = idCounter++,
+                            title = title,
+                            description = description,
+                            durationSec = duration,
+                            exerciseCount = count,
+                            category = category
+                        )
+                    )
+                }
+            }
+        }
+    }
+
     fun generateExercisesForWorkout(workoutId: Int, title: String, count: Int, category: String = ""): List<Exercise> {
-        val cat = category.ifBlank { detectCategoryFromTitle(title) }
+        val cat = category.ifBlank { detectCategory(title) }
         val templates = exerciseTemplates[cat] ?: exerciseTemplates.values.firstOrNull() ?: emptyList()
         if (templates.isEmpty()) return emptyList()
 
@@ -422,7 +446,7 @@ object WorkoutSeedData {
         return "${prefix}_$idx"
     }
 
-    private fun detectCategoryFromTitle(title: String): String {
+    fun detectCategory(title: String): String {
         val t = title.lowercase()
         return when {
             t.contains("glute") || t.contains("booty") || t.contains("hip thrust") -> "Booty"

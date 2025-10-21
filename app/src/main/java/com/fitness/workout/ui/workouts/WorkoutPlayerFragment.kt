@@ -9,11 +9,16 @@ import android.widget.MediaController
 import android.widget.VideoView
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.fitness.workout.data.model.Exercise
 import com.fitness.workout.databinding.FragmentWorkoutPlayerBinding
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
 class WorkoutPlayerFragment : Fragment() {
@@ -27,6 +32,9 @@ class WorkoutPlayerFragment : Fragment() {
     private var currentIndex = 0
 
     private var mediaController: MediaController? = null
+
+    private val currentExercises: List<Exercise>
+        get() = viewModel.detail.value?.exercises.orEmpty()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
@@ -55,22 +63,36 @@ class WorkoutPlayerFragment : Fragment() {
         // load workout + exercises
         val workoutId = args.workoutId
         viewModel.loadWorkout(workoutId)
-        viewModel.loadExercises(workoutId)
+        viewLifecycleOwner.lifecycleScope.launch {
+            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
+                viewModel.detail.collect { detail ->
+                    if (detail == null) {
+                        exerciseAdapter.submitList(emptyList())
+                        binding.tvPlayerCalories.text = getString(com.fitness.workout.R.string.calories_format, 0)
+                        updateIndexDisplay(0)
+                        stopAndHideVideo()
+                        return@collect
+                    }
 
-        viewModel.workout.observe(viewLifecycleOwner) { w ->
-            if (w == null) return@observe
-            binding.tvPlayerCalories.text = getString(com.fitness.workout.R.string.calories_format, (w.durationSec * 6 / 60))
-        }
+                    val workout = detail.workout
+                    binding.tvPlayerCalories.text =
+                        getString(com.fitness.workout.R.string.calories_format, (workout.durationSec * 6 / 60))
 
-        viewModel.exercises.observe(viewLifecycleOwner) { list ->
-            exerciseAdapter.submitList(list)
-            // ensure index within bounds
-            if (currentIndex >= list.size) currentIndex = (list.size - 1).coerceAtLeast(0)
-            updateIndexDisplay()
-            // set total index
-            binding.tvPlayerIndex.text = formatIndex(currentIndex, list.size)
-            // start playing current exercise's video if available
-            playVideoForIndex(currentIndex)
+                    val list = detail.exercises
+                    exerciseAdapter.submitList(list)
+                    if (list.isEmpty()) {
+                        currentIndex = 0
+                        updateIndexDisplay(0)
+                        stopAndHideVideo()
+                        return@collect
+                    }
+                    if (currentIndex >= list.size) {
+                        currentIndex = (list.size - 1).coerceAtLeast(0)
+                    }
+                    updateIndexDisplay(list.size)
+                    playVideoForIndex(currentIndex, list)
+                }
+            }
         }
 
         // play button toggles playback
@@ -90,7 +112,7 @@ class WorkoutPlayerFragment : Fragment() {
         }
 
         binding.btnPrev.setOnClickListener {
-            val list = viewModel.exercises.value ?: return@setOnClickListener
+            val list = currentExercises
             if (list.isEmpty()) return@setOnClickListener
             currentIndex = (currentIndex - 1).coerceAtLeast(0)
             scrollToCurrent()
@@ -98,7 +120,7 @@ class WorkoutPlayerFragment : Fragment() {
         }
 
         binding.btnNext.setOnClickListener {
-            val list = viewModel.exercises.value ?: return@setOnClickListener
+            val list = currentExercises
             if (list.isEmpty()) return@setOnClickListener
             currentIndex = (currentIndex + 1).coerceAtMost(list.size - 1)
             scrollToCurrent()
@@ -107,10 +129,9 @@ class WorkoutPlayerFragment : Fragment() {
 
     }
 
-    private fun playVideoForIndex(idx: Int) {
-        val list = viewModel.exercises.value ?: return
-        if (list.isEmpty() || idx < 0 || idx >= list.size) return
-        val exercise = list[idx]
+    private fun playVideoForIndex(idx: Int, exercises: List<Exercise> = currentExercises) {
+        if (exercises.isEmpty() || idx < 0 || idx >= exercises.size) return
+        val exercise = exercises[idx]
 
         // Try raw resource first (videoResName), then fallback to videoUrl
         val resName = exercise.videoResName
@@ -155,15 +176,14 @@ class WorkoutPlayerFragment : Fragment() {
     }
 
     private fun scrollToCurrent() {
-        val list = viewModel.exercises.value ?: emptyList()
+        val list = currentExercises
         if (list.isEmpty()) return
         binding.rvPlayerExercises.scrollToPosition(currentIndex)
-        updateIndexDisplay()
+        updateIndexDisplay(list.size)
     }
 
-    private fun updateIndexDisplay() {
-        val list = viewModel.exercises.value ?: emptyList()
-        binding.tvPlayerIndex.text = formatIndex(currentIndex, list.size)
+    private fun updateIndexDisplay(total: Int) {
+        binding.tvPlayerIndex.text = formatIndex(currentIndex.coerceAtMost((total - 1).coerceAtLeast(0)), total)
     }
 
     private fun formatIndex(idx: Int, total: Int): String = if (total <= 0) "0/0" else "${idx + 1}/$total"
