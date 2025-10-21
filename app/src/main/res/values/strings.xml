@@ -101,6 +101,9 @@
     <string name="program_exercises_for_today">Exercises for today</string>
     <string name="complete_day">Complete Day</string>
     <string name="program_finished">Program finished</string>
+    <string name="program_finish_cta">Finish program</string>
+    <string name="program_complete_message">You're all done for this challenge. Enjoy a recovery day!</string>
+    <string name="program_day_completed_toast">Day completed — progress updated</string>
 
     <!-- New strings for slimmer program look -->
     <string name="slimmer_title">Slimmer You in 21 Days!</string>

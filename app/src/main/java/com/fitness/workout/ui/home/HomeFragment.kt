@@ -13,20 +13,23 @@ import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import androidx.appcompat.app.AlertDialog
 import com.fitness.workout.R
+import com.fitness.workout.data.repository.WorkoutRepository
 import com.fitness.workout.databinding.FragmentHomeBinding
 import dagger.hilt.android.AndroidEntryPoint
 import androidx.lifecycle.lifecycleScope
 import com.fitness.workout.prefs.PrefsManager
-import com.fitness.workout.util.Constant.PROGRAM_TOTAL_DAYS
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.flow.first
+import javax.inject.Inject
 
 @AndroidEntryPoint
 class HomeFragment : Fragment() {
     private var _binding: FragmentHomeBinding? = null
     private val binding get() = _binding!!
+
+    @Inject lateinit var prefsManager: PrefsManager
+    @Inject lateinit var workoutRepository: WorkoutRepository
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
@@ -97,13 +100,19 @@ class HomeFragment : Fragment() {
         }
 
         // Observe program progress from PrefsManager (DataStore) and display it
-        val prefsManager = PrefsManager(requireContext())
-        lifecycleScope.launch {
+        val totalDays = workoutRepository.programLength.coerceAtLeast(1)
+        viewLifecycleOwner.lifecycleScope.launch {
             prefsManager.profile
                 .map { it.programDay ?: 1 }
                 .distinctUntilChanged()
-                .collect { day ->
-                    binding.tvDayCount.text = "$day/$PROGRAM_TOTAL_DAYS"
+                .collect { rawDay ->
+                    val safeDay = rawDay.coerceAtMost(totalDays).coerceAtLeast(1)
+                    val progressText = if (rawDay > totalDays) {
+                        "$totalDays/$totalDays"
+                    } else {
+                        "$safeDay/$totalDays"
+                    }
+                    binding.tvDayCount.text = progressText
                 }
         }
 

@@ -1,53 +1,51 @@
 package com.fitness.workout.data.repository
 
-import com.fitness.workout.data.db.WorkoutDao
-import com.fitness.workout.data.db.WorkoutLogDao
+import com.fitness.workout.data.catalog.WorkoutCatalog
+import com.fitness.workout.data.model.ProgramDayPlan
 import com.fitness.workout.data.model.Workout
 import com.fitness.workout.data.model.WorkoutDetail
 import com.fitness.workout.data.model.WorkoutLog
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.first
-import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.update
+import java.util.concurrent.atomic.AtomicLong
 import javax.inject.Inject
+import javax.inject.Singleton
 
-class WorkoutRepository @Inject constructor(
-    private val workoutDao: WorkoutDao,
-    private val workoutLogDao: WorkoutLogDao
-) {
+@Singleton
+class WorkoutRepository @Inject constructor() {
 
-    fun getWorkouts(): Flow<List<Workout>> = workoutDao.getAll().map { list ->
-        if (list.isEmpty()) WorkoutSeedData.sampleWorkouts() else list
-    }
+    private val workoutEntries = WorkoutCatalog.workouts
+    private val workoutsFlow = MutableStateFlow(workoutEntries.map { it.workout })
 
-    suspend fun seedIfEmpty() {
-        val current = workoutDao.getAll()
-        val first = current.first()
-        if (first.isEmpty()) {
-            workoutDao.insertAll(WorkoutSeedData.sampleWorkouts())
-        } else {
-            val updated = first.map { w ->
-                if (w.category.isBlank()) {
-                    val inferred = WorkoutSeedData.detectCategory(w.title)
-                    if (inferred.isNotBlank()) w.copy(category = inferred) else w
-                } else w
-            }
-            if (updated != first) {
-                workoutDao.insertAll(updated)
-            }
-        }
-    }
+    private val logsFlow = MutableStateFlow<List<WorkoutLog>>(emptyList())
+    private val logIdCounter = AtomicLong(1L)
+
+    val programLength: Int = WorkoutCatalog.programDays.size
+
+    fun getWorkouts(): Flow<List<Workout>> = workoutsFlow.asStateFlow()
+
+    suspend fun getWorkoutDetail(workoutId: Int): WorkoutDetail? =
+        WorkoutCatalog.findById(workoutId)
 
     suspend fun logWorkout(workoutId: Int, durationSec: Int, calories: Int) {
-        val log = WorkoutLog(workoutId = workoutId, timestamp = System.currentTimeMillis(), durationSec = durationSec, caloriesBurned = calories)
-        workoutLogDao.insert(log)
+        val log = WorkoutLog(
+            id = logIdCounter.getAndIncrement(),
+            workoutId = workoutId,
+            timestamp = System.currentTimeMillis(),
+            durationSec = durationSec,
+            caloriesBurned = calories
+        )
+        logsFlow.update { current -> listOf(log) + current }
     }
 
-    fun getLogs(): Flow<List<WorkoutLog>> = workoutLogDao.getAll()
+    fun getLogs(): Flow<List<WorkoutLog>> = logsFlow.asStateFlow()
 
-    suspend fun getWorkoutDetail(workoutId: Int): WorkoutDetail? {
-        val workout = workoutDao.getById(workoutId) ?: return null
-        val count = if (workout.exerciseCount > 0) workout.exerciseCount else 6
-        val exercises = WorkoutSeedData.generateExercisesForWorkout(workout.id, workout.title, count, workout.category)
-        return WorkoutDetail(workout, exercises)
+    fun getProgramDay(day: Int): ProgramDayPlan? =
+        WorkoutCatalog.programDays.getOrNull(day - 1)
+
+    fun refreshCatalog() {
+        workoutsFlow.value = workoutEntries.map { it.workout }
     }
 }

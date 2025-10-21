@@ -8,7 +8,6 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.stateIn
-import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
@@ -19,11 +18,5 @@ class WorkoutsViewModel @Inject constructor(
     private val initialSamples: List<Workout> = emptyList()
 
     val workouts: StateFlow<List<Workout>> = repo.getWorkouts()
-        .stateIn(viewModelScope, SharingStarted.Lazily, initialSamples)
-
-    init {
-        viewModelScope.launch {
-            repo.seedIfEmpty()
-        }
-    }
+        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), initialSamples)
 }
