@@ -1,8 +1,14 @@
+// Home screen: dashboard and quick navigation.
+// Shows program progress and categories.
 package com.fitness.workout.ui.home
 
+import android.Manifest
+import android.content.pm.PackageManager
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
+import android.os.Build
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -31,6 +37,13 @@ class HomeFragment : Fragment() {
     @Inject lateinit var prefsManager: PrefsManager
     @Inject lateinit var workoutRepository: WorkoutRepository
 
+    private val requestNotification = registerForActivityResult(
+        androidx.activity.result.contract.ActivityResultContracts.RequestPermission()
+    ) { isGranted: Boolean ->
+        // handle the result if needed
+        Log.d("TAG123", ": isGranted = $isGranted")
+    }
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
     ): View {
@@ -41,7 +54,6 @@ class HomeFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        // Focus area card clicks navigate to CategoryFragment with a category name
         binding.imgBooty.setOnClickListener {
             findNavController().navigate(
                 R.id.action_homeFragment_to_categoryFragment,
@@ -67,13 +79,10 @@ class HomeFragment : Fragment() {
             )
         }
 
-        // Program card click - open ProgramFragment
         binding.cardProgram.setOnClickListener {
-            // navigate to program fragment
             findNavController().navigate(R.id.action_homeFragment_to_programFragment)
         }
 
-        // Recipe card clicks - navigate to same CategoryFragment so they show related workouts
         binding.imgPlan1500.setOnClickListener {
             findNavController().navigate(
                 R.id.action_homeFragment_to_categoryFragment,
@@ -99,7 +108,6 @@ class HomeFragment : Fragment() {
             )
         }
 
-        // Observe program progress from PrefsManager (DataStore) and display it
         val totalDays = workoutRepository.programLength.coerceAtLeast(1)
         viewLifecycleOwner.lifecycleScope.launch {
             prefsManager.profile
@@ -116,7 +124,6 @@ class HomeFragment : Fragment() {
                 }
         }
 
-        // Handle system back press on HomeFragment to show exit confirmation
         val backCallback = object : OnBackPressedCallback(true) {
             override fun handleOnBackPressed() {
                 showExitDialog()
@@ -124,6 +131,7 @@ class HomeFragment : Fragment() {
         }
         requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner, backCallback)
 
+        requestNotificationPermission()
     }
 
     private fun showExitDialog() {
@@ -133,7 +141,6 @@ class HomeFragment : Fragment() {
         val dialogView = layoutInflater.inflate(R.layout.dialog_exit, null)
         builder.setView(dialogView)
         val dialog = builder.create()
-        // make background transparent so our rounded drawable shows correctly
         dialog.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
 
         val btnCancel = dialogView.findViewById<Button>(R.id.btnExitCancel)
@@ -144,7 +151,6 @@ class HomeFragment : Fragment() {
         }
         btnConfirm.setOnClickListener {
             dialog.dismiss()
-            // Close the app
             requireActivity().finishAffinity()
         }
 
@@ -156,4 +162,13 @@ class HomeFragment : Fragment() {
         _binding = null
     }
 
+    private fun requestNotificationPermission() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            if (requireContext().checkSelfPermission(Manifest.permission.POST_NOTIFICATIONS) ==
+                PackageManager.PERMISSION_GRANTED) {
+                return
+            }
+            requestNotification.launch(Manifest.permission.POST_NOTIFICATIONS)
+        }
+    }
 }

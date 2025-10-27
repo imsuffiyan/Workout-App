@@ -4,6 +4,9 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.fitness.workout.data.model.WorkoutDetail
 import com.fitness.workout.data.repository.WorkoutRepository
+
+import com.fitness.workout.domain.usecase.GetWorkoutDetail
+import com.fitness.workout.domain.usecase.LogWorkout
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -14,14 +17,15 @@ import kotlin.math.roundToInt
 
 @HiltViewModel
 class WorkoutDetailViewModel @Inject constructor(
-    private val repo: WorkoutRepository
+    private val getWorkoutDetail: GetWorkoutDetail,
+    private val logWorkout: LogWorkout
 ) : ViewModel() {
     private val _detail = MutableStateFlow<WorkoutDetail?>(null)
     val detail: StateFlow<WorkoutDetail?> = _detail.asStateFlow()
 
     fun loadWorkout(id: Int) {
         viewModelScope.launch {
-            val data = repo.getWorkoutDetail(id)
+            val data = getWorkoutDetail.invoke(id)
             _detail.value = data
         }
     }
@@ -34,7 +38,7 @@ class WorkoutDetailViewModel @Inject constructor(
             val totalCalories = detail.exercises.sumOf { it.calories }
                 .takeIf { it > 0 }
                 ?: ((actualDuration / 60.0) * 8.0).roundToInt().coerceAtLeast(12)
-            repo.logWorkout(workout.id, actualDuration, totalCalories)
+            logWorkout.invoke(workout.id, actualDuration, totalCalories)
         }
     }
 }

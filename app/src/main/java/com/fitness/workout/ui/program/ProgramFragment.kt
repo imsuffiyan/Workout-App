@@ -1,3 +1,5 @@
+// Program screen: current program day UI.
+// Shows exercises and completion action.
 package com.fitness.workout.ui.program
 
 import android.os.Bundle

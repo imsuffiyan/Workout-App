@@ -1,3 +1,5 @@
+// More screen: dashboard and quick actions.
+// Adds water and updates weight via ViewModel.
 package com.fitness.workout.ui.more
 
 import android.os.Bundle
@@ -12,6 +14,7 @@ import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import com.fitness.workout.R
 import com.fitness.workout.databinding.FragmentMoreBinding
+import com.fitness.workout.notifications.NotificationUtils
 import com.fitness.workout.ui.common.DialogUtils
 import com.fitness.workout.ui.profile.ProfileViewModel
 import dagger.hilt.android.AndroidEntryPoint
@@ -37,14 +40,11 @@ class MoreFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         Log.d("MoreFragment", "onViewCreated")
 
-        // Observe profile and update the dashboard views
         viewLifecycleOwner.lifecycleScope.launch {
             viewModel.profile.collectLatest { profile ->
-                // dashboard stats (placeholders kept if profile doesn't provide values)
                 binding.tvWorkoutsCount.text = "0"
                 binding.tvCalories.text = "0.0"
                 binding.tvMinutes.text = "0"
-                // Water: show persisted water total (ml)
                 val waterMl = profile.waterMl ?: 0
                 val unit = profile.units ?: "lb/ft"
                 binding.tvWaterMl.text = String.format(Locale.getDefault(), "%d", waterMl)
@@ -54,13 +54,10 @@ class MoreFragment : Fragment() {
             }
         }
 
-        // My Profile row (in General Settings) opens the details screen
         binding.myProfile.setOnClickListener {
-            // navigate directly to the destination id (action id may not be generated yet)
             findNavController().navigate(R.id.profileDetailsFragment)
         }
 
-        // FAB: Add weight - show the same attractive edit dialog as ProfileDetailsFragment
         binding.fabWeightAdd.setOnClickListener {
             val currentValue = binding.tvWeightValue.text.toString()
             DialogUtils.showEditDialog(
@@ -72,18 +69,29 @@ class MoreFragment : Fragment() {
                 val numeric = newValue.filter { it.isDigit() || it == '.' || it == '-' }
                 val f = numeric.toFloatOrNull()
                 if (f != null) {
-                    viewModel.saveExtended(currentWeight = f)
-                    binding.tvWeightValue.text = "$f"
+                    viewModel.setCurrentWeight(f)
                 }
             }
         }
 
-        // FAB: Add water - increment and persist the tvWaterMl value by 275
         binding.fabWaterAdd.setOnClickListener {
-            val added = 275
-            viewModel.incrementWater(added)
+            onWaterAdd()
         }
-        // other rows can be wired later (history, coach)
+    }
+
+    private fun onWaterAdd() {
+        val added = 275
+        val currentText = binding.tvWaterMl.text.toString().filter { it.isDigit() }
+        val current = currentText.toIntOrNull() ?: 0
+        val newTotal = current + added
+        viewModel.incrementWater(added)
+        val context = requireContext()
+        if (newTotal <= 0) {
+            NotificationUtils.cancelWaterRemindersWork(context)
+        } else {
+            val count = (newTotal / 275).coerceAtLeast(1)
+            NotificationUtils.scheduleOrUpdateWaterRemindersWork(context, count)
+        }
     }
 
     override fun onDestroyView() {

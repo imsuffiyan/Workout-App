@@ -102,7 +102,7 @@
     <string name="complete_day">Complete Day</string>
     <string name="program_finished">Program finished</string>
     <string name="program_finish_cta">Finish program</string>
-    <string name="program_complete_message">You're all done for this challenge. Enjoy a recovery day!</string>
+    <string name="program_complete_message">You\'re all done for this challenge. Enjoy a recovery day!</string>
     <string name="program_day_completed_toast">Day completed — progress updated</string>
 
     <!-- New strings for slimmer program look -->
@@ -150,8 +150,6 @@
     <!-- Strings for program fragment -->
     <string name="slimmer_description">Sculpt your curves &amp; BLAST stubborn fat.</string>
     <string name="calorie_value">32.0 kcal</string>
-    <string name="ad_button_label">Asaal Krin</string>
-    <string name="ad_special_offer">Special offer</string>
 
     <!-- Placeholder for exercise duration -->
     <string name="duration_placeholder">00:20</string>
@@ -160,4 +158,8 @@
     <string name="take_action">Take Action</string>
     <string name="water_default">275</string>
     <string name="let_s_start">Let\'s Start</string>
+
+    <!-- New formatted strings -->
+    <string name="progress_stats_format">Workouts: %1$d\nCalories burned: %2$d</string>
+    <string name="player_index_format">%1$d/%2$d</string>
 </resources>

@@ -25,17 +25,14 @@ class PrefsManager @Inject constructor(@ApplicationContext context: Context) {
         val TARGET = floatPreferencesKey("target_weight")
         val NOTIFS = booleanPreferencesKey("notifications")
 
-        // extended fields
         val PURPOSE = stringPreferencesKey("purpose")
         val UNITS = stringPreferencesKey("units")
         val HEIGHT = stringPreferencesKey("height")
         val CURRENT = floatPreferencesKey("current_weight")
         val AVATAR = stringPreferencesKey("avatar_uri")
 
-        // water total in milliliters
         val WATER = intPreferencesKey("water_ml")
 
-        // program progress: current day index (1..N)
         val PROGRAM_DAY = intPreferencesKey("program_current_day")
     }
 
@@ -46,17 +43,14 @@ class PrefsManager @Inject constructor(@ApplicationContext context: Context) {
             targetWeight = prefs[Keys.TARGET],
             notificationsEnabled = prefs[Keys.NOTIFS] ?: false,
 
-            // extended
             purpose = prefs[Keys.PURPOSE],
             units = prefs[Keys.UNITS],
             height = prefs[Keys.HEIGHT],
             currentWeight = prefs[Keys.CURRENT],
             avatarUri = prefs[Keys.AVATAR],
 
-            // water total (ml) - may be null if not set
             waterMl = prefs[Keys.WATER],
 
-            // program progress
             programDay = prefs[Keys.PROGRAM_DAY]
         )
     }
@@ -70,7 +64,6 @@ class PrefsManager @Inject constructor(@ApplicationContext context: Context) {
         }
     }
 
-    // save extended profile fields; nullable params are ignored when null
     suspend fun saveProfileExtended(purpose: String? = null, units: String? = null, height: String? = null, current: Float? = null) {
         ds.edit { prefs ->
             if (purpose != null) prefs[Keys.PURPOSE] = purpose
@@ -80,7 +73,6 @@ class PrefsManager @Inject constructor(@ApplicationContext context: Context) {
         }
     }
 
-    // save only target weight (convenience)
     suspend fun saveTargetWeight(target: Float?) {
         if (target == null) return
         ds.edit { prefs ->
@@ -88,21 +80,12 @@ class PrefsManager @Inject constructor(@ApplicationContext context: Context) {
         }
     }
 
-    // save avatar uri string
     suspend fun saveAvatarUri(uri: String?) {
         ds.edit { prefs ->
             if (uri != null) prefs[Keys.AVATAR] = uri
         }
     }
 
-    // Save/overwrite water total (ml)
-    suspend fun saveWaterMl(value: Int) {
-        ds.edit { prefs ->
-            prefs[Keys.WATER] = value
-        }
-    }
-
-    // Increment water total atomically by `add` milliliters
     suspend fun incrementWaterMl(add: Int) {
         ds.edit { prefs ->
             val current = prefs[Keys.WATER] ?: 0
@@ -110,18 +93,22 @@ class PrefsManager @Inject constructor(@ApplicationContext context: Context) {
         }
     }
 
-    // Save/overwrite program day
     suspend fun saveProgramDay(day: Int) {
         ds.edit { prefs ->
             prefs[Keys.PROGRAM_DAY] = day
         }
     }
 
-    // Increment program day by 1 (up to a given max handled by callers)
     suspend fun incrementProgramDay() {
         ds.edit { prefs ->
             val current = prefs[Keys.PROGRAM_DAY] ?: 1
             prefs[Keys.PROGRAM_DAY] = current + 1
+        }
+    }
+
+    suspend fun saveAge(age: Int) {
+        ds.edit { prefs ->
+            prefs[Keys.AGE] = age
         }
     }
 }
@@ -132,16 +119,13 @@ data class UserProfile(
     val targetWeight: Float? = null,
     val notificationsEnabled: Boolean = false,
 
-    // extended
     val purpose: String? = null,
     val units: String? = null,
     val height: String? = null,
     val currentWeight: Float? = null,
     val avatarUri: String? = null,
 
-    // water total in milliliters
     val waterMl: Int? = null,
 
-    // program progress: current day number
     val programDay: Int? = null
 )

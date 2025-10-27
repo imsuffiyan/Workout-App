@@ -1,3 +1,5 @@
+// Category screen: lists workouts by category.
+// Navigates to workout details.
 package com.fitness.workout.ui.home
 
 import android.os.Bundle
@@ -9,7 +11,6 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
-import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.fitness.workout.R
 import com.fitness.workout.databinding.FragmentCategoryBinding
@@ -54,7 +55,6 @@ class CategoryFragment : Fragment() {
         binding.headerImage.setImageResource(headerRes)
 
         adapter = WorkoutAdapter { workout ->
-            // navigate to workout detail, pass workoutId
             findNavController().navigate(
                 R.id.action_categoryFragment_to_workoutDetailFragment,
                 bundleOf("workoutId" to workout.id)

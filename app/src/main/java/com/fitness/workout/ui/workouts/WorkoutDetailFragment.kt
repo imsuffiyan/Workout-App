@@ -1,3 +1,5 @@
+// Workout detail screen: shows workout content and timer.
+// Start/stop timer and open player.
 package com.fitness.workout.ui.workouts
 
 import android.os.Bundle
@@ -43,9 +45,7 @@ class WorkoutDetailFragment : Fragment() {
         val id = args.workoutId
         viewModel.loadWorkout(id)
 
-        // setup exercises RecyclerView & adapter
         exerciseAdapter = ExerciseAdapter { exercise ->
-            // navigate via Safe Args generated directions
             val action = WorkoutDetailFragmentDirections.actionWorkoutDetailFragmentToExerciseDetailFragment(exercise)
             findNavController().navigate(action)
         }
@@ -64,7 +64,6 @@ class WorkoutDetailFragment : Fragment() {
                     val workout = detail.workout
                     binding.title.text = workout.title
                     binding.description.text = workout.description
-                    // placeholder hero image
                     binding.heroImage.setImageResource(R.drawable.ic_launcher_foreground)
 
                     if (timer == null) {
@@ -73,14 +72,14 @@ class WorkoutDetailFragment : Fragment() {
                     }
 
                     val level = when {
-                        workout.durationSec <= 150 -> getString(com.fitness.workout.R.string.level_beginner)
-                        workout.durationSec <= 450 -> getString(com.fitness.workout.R.string.level_intermediate)
-                        else -> getString(com.fitness.workout.R.string.level_advanced)
+                        workout.durationSec <= 150 -> getString(R.string.level_beginner)
+                        workout.durationSec <= 450 -> getString(R.string.level_intermediate)
+                        else -> getString(R.string.level_advanced)
                     }
                     binding.tvLevel.text = level
 
-                    val caloriesEst = workout.durationSec * 6 / 60 // per-minute-ish display
-                    binding.tvCalories.text = getString(com.fitness.workout.R.string.calories_format, caloriesEst)
+                    val caloriesEst = workout.durationSec * 6 / 60
+                    binding.tvCalories.text = getString(R.string.calories_format, caloriesEst)
 
                     val list = detail.exercises
                     exerciseAdapter.submitList(list)
@@ -90,19 +89,16 @@ class WorkoutDetailFragment : Fragment() {
         }
 
         binding.startButton.setOnClickListener {
-            // if a timer is running, stop it; otherwise start for remainingSec
             if (timer != null) {
                 timer?.cancel()
                 timer = null
                 binding.startButton.isEnabled = true
-                // reset display to full duration if workout loaded
                 viewModel.detail.value?.workout?.let { binding.timer.text = formatDuration(it.durationSec) }
             } else {
                 startTimer()
             }
         }
 
-        // open player screen showing exercises (center play button)
         binding.btnOpenPlayer.setOnClickListener {
             val workoutId = args.workoutId
             val action = WorkoutDetailFragmentDirections.actionWorkoutDetailFragmentToWorkoutPlayerFragment(workoutId)
@@ -113,7 +109,6 @@ class WorkoutDetailFragment : Fragment() {
     private fun startTimer() {
         val durationSec = viewModel.detail.value?.workout?.durationSec ?: 30
         binding.startButton.isEnabled = false
-        // use remainingSec if it was set (allows resume), otherwise use duration
         if (remainingSec <= 0) remainingSec = durationSec
         timer = object : CountDownTimer(remainingSec * 1000L, 1000L) {
             override fun onTick(millisUntilFinished: Long) {
@@ -122,9 +117,8 @@ class WorkoutDetailFragment : Fragment() {
             }
 
             override fun onFinish() {
-                binding.timer.text = getString(com.fitness.workout.R.string.done)
+                binding.timer.text = getString(R.string.done)
                 binding.startButton.isEnabled = true
-                // log workout using the workout duration
                 viewModel.detail.value?.workout?.let { viewModel.logWorkout(it.durationSec) }
                 timer = null
                 remainingSec = 0

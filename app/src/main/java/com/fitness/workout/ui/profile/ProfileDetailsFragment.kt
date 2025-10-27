@@ -1,3 +1,5 @@
+// Profile details screen: edit user profile.
+// Allows age, units, height, weight editing.
 package com.fitness.workout.ui.profile
 
 import android.graphics.Color
@@ -30,7 +32,6 @@ class ProfileDetailsFragment : Fragment() {
 
     private val viewModel: ProfileViewModel by viewModels()
 
-    // keep latest profile snapshot to preserve fields when saving partial updates
     private var currentProfile: UserProfile? = null
 
     override fun onCreateView(
@@ -43,7 +44,6 @@ class ProfileDetailsFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        // Resolve views explicitly from binding.root to avoid any generated-binding mismatch
         val rowAge = binding.root.findViewById<MaterialCardView>(R.id.rowAge)
         val rowPurpose = binding.root.findViewById<MaterialCardView>(R.id.rowPurpose)
         val rowUnits = binding.root.findViewById<MaterialCardView>(R.id.rowUnits)
@@ -58,7 +58,6 @@ class ProfileDetailsFragment : Fragment() {
         val tvCurrentValue = binding.root.findViewById<TextView>(R.id.tvCurrentValue)
         val tvTargetValue = binding.root.findViewById<TextView>(R.id.tvTargetValue)
 
-        // Observe profile
         viewLifecycleOwner.lifecycleScope.launch {
             viewModel.profile.collectLatest { profile ->
                 currentProfile = profile
@@ -73,7 +72,6 @@ class ProfileDetailsFragment : Fragment() {
             }
         }
 
-        // Click listeners to edit fields
         rowAge.setOnClickListener {
             DialogUtils.showEditDialog(
                 this,
@@ -83,13 +81,7 @@ class ProfileDetailsFragment : Fragment() {
             ) { newValue ->
                 val intVal = newValue.toIntOrNull()
                 if (intVal != null) {
-                    // preserve other fields by passing current values
-                    viewModel.saveProfile(
-                        name = currentProfile?.name,
-                        age = intVal,
-                        target = currentProfile?.targetWeight,
-                        notifications = currentProfile?.notificationsEnabled ?: false
-                    )
+                    viewModel.setAge(intVal)
                     showSaved()
                 }
             }
@@ -102,7 +94,7 @@ class ProfileDetailsFragment : Fragment() {
                 tvPurposeValue.text.toString(),
                 InputType.TYPE_CLASS_TEXT
             ) { newValue ->
-                viewModel.saveExtended(purpose = newValue)
+                viewModel.setPurpose(newValue)
                 showSaved()
             }
         }
@@ -116,7 +108,7 @@ class ProfileDetailsFragment : Fragment() {
                 tvHeightValue.text.toString(),
                 InputType.TYPE_CLASS_TEXT
             ) { newValue ->
-                viewModel.saveExtended(height = newValue)
+                viewModel.setHeight(newValue)
                 showSaved()
             }
         }
@@ -128,11 +120,10 @@ class ProfileDetailsFragment : Fragment() {
                 tvCurrentValue.text.toString(),
                 InputType.TYPE_CLASS_NUMBER or InputType.TYPE_NUMBER_FLAG_DECIMAL
             ) { newValue ->
-                // strip non-digits except dot and minus
                 val numeric = newValue.filter { it.isDigit() || it == '.' || it == '-' }
                 val f = numeric.toFloatOrNull()
                 if (f != null) {
-                    viewModel.saveExtended(currentWeight = f)
+                    viewModel.setCurrentWeight(f)
                     showSaved()
                 }
             }
@@ -148,8 +139,7 @@ class ProfileDetailsFragment : Fragment() {
                 val numeric = newValue.filter { it.isDigit() || it == '.' || it == '-' }
                 val f = numeric.toFloatOrNull()
                 if (f != null) {
-                    // use saveTargetWeight convenience method
-                    viewModel.saveTargetWeight(f)
+                    viewModel.setTargetWeight(f)
                     showSaved()
                 }
             }
@@ -162,7 +152,6 @@ class ProfileDetailsFragment : Fragment() {
     }
 
     private fun showUnitsDialog() {
-        // Inflate custom attractive units dialog
         val inflater = layoutInflater
         val dialogView = inflater.inflate(R.layout.dialog_units, null)
         val rbLb = dialogView.findViewById<android.widget.RadioButton>(R.id.rbLbFt)
@@ -170,7 +159,6 @@ class ProfileDetailsFragment : Fragment() {
         val btnCancel = dialogView.findViewById<Button>(R.id.btnUnitsCancel)
         val btnSave = dialogView.findViewById<Button>(R.id.btnUnitsSave)
 
-        // Determine current selection from the displayed units text
         val current = binding.root.findViewById<TextView>(R.id.tvUnitsValue).text.toString()
         if (current.contains("kg", ignoreCase = true) || current.contains(
                 "kg/m",
@@ -190,7 +178,7 @@ class ProfileDetailsFragment : Fragment() {
         btnCancel.setOnClickListener { dialog.dismiss() }
         btnSave.setOnClickListener {
             val selected = if (rbKg.isChecked) "kg/m" else "lb/ft"
-            viewModel.saveExtended(units = selected)
+            viewModel.setUnits(selected)
             showSaved()
             dialog.dismiss()
         }

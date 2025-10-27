@@ -4,7 +4,6 @@ import android.content.Context
 import android.widget.Toast
 import java.util.Locale
 
-// Convert seconds into H:MM:SS or MM:SS
 fun Int.toDurationString(): String {
     val totalSeconds = this
     val hours = totalSeconds / 3600
@@ -14,9 +13,12 @@ fun Int.toDurationString(): String {
     else String.format(Locale.getDefault(), "%d:%02d", minutes, seconds)
 }
 
-// Convenience toast extension
 fun Context.toast(message: CharSequence, duration: Int = Toast.LENGTH_SHORT) {
     Toast.makeText(this, message, duration).show()
 }
 
-// For fragments/views, callers can use requireContext().toast(...) or view.context.toast(...)
+fun Int.formatDuration(): String {
+    val minutes = this / 60
+    val seconds = this % 60
+    return String.format(Locale.getDefault(), "%02d:%02d", minutes, seconds)
+}

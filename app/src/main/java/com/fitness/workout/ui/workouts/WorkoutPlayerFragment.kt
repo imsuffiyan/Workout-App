@@ -1,5 +1,9 @@
+// Workout player: play exercises and videos.
+// Controls play, previous, next actions.
 package com.fitness.workout.ui.workouts
 
+import android.annotation.SuppressLint
+import android.net.Uri
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -9,11 +13,10 @@ import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
-import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
-import androidx.recyclerview.widget.LinearLayoutManager
 import com.fitness.workout.data.model.Exercise
 import com.fitness.workout.databinding.FragmentWorkoutPlayerBinding
+import com.fitness.workout.R
 import com.fitness.workout.util.toDurationString
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
@@ -26,7 +29,6 @@ class WorkoutPlayerFragment : Fragment() {
     private val args: WorkoutPlayerFragmentArgs by navArgs()
     private val viewModel: WorkoutDetailViewModel by activityViewModels()
 
-    private lateinit var exerciseAdapter: ExerciseAdapter
     private var currentIndex = 0
 
     private val currentExercises: List<Exercise>
@@ -44,77 +46,111 @@ class WorkoutPlayerFragment : Fragment() {
 
         binding.videoPlayer.visibility = View.GONE
 
-        exerciseAdapter = ExerciseAdapter { exercise ->
-            val action = WorkoutPlayerFragmentDirections.actionWorkoutPlayerFragmentToExerciseDetailFragment(exercise)
-            findNavController().navigate(action)
-        }
-        binding.rvPlayerExercises.layoutManager = LinearLayoutManager(requireContext())
-        binding.rvPlayerExercises.adapter = exerciseAdapter
+        viewModel.loadWorkout(args.workoutId)
 
-        val workoutId = args.workoutId
-        viewModel.loadWorkout(workoutId)
+        setupObservers()
+        setupControls()
+    }
+
+    private fun setupObservers() {
         viewLifecycleOwner.lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
                 viewModel.detail.collect { detail ->
-                    if (detail == null) {
-                        exerciseAdapter.submitList(emptyList())
-                        renderExercise(null, 0)
-                        return@collect
-                    }
-                    val exercises = detail.exercises
-                    exerciseAdapter.submitList(exercises)
+                    val exercises = detail?.exercises.orEmpty()
                     if (exercises.isEmpty()) {
                         currentIndex = 0
                         renderExercise(null, 0)
                         return@collect
                     }
-                    if (currentIndex >= exercises.size) {
+                    if (currentIndex > exercises.lastIndex) {
                         currentIndex = exercises.lastIndex
                     }
                     renderExercise(exercises[currentIndex], exercises.size)
                 }
             }
         }
+    }
 
-        binding.btnPlayerPlay.setOnClickListener {
-            val exercise = currentExercises.getOrNull(currentIndex) ?: return@setOnClickListener
-            val action = WorkoutPlayerFragmentDirections.actionWorkoutPlayerFragmentToExerciseDetailFragment(exercise)
-            findNavController().navigate(action)
-        }
+    private fun setupControls() = with(binding) {
+        btnPlayerPlay.setOnClickListener { togglePlayPause() }
 
-        binding.btnPrev.setOnClickListener {
+        btnPrev.setOnClickListener {
             val list = currentExercises
             if (list.isEmpty()) return@setOnClickListener
             currentIndex = (currentIndex - 1).coerceAtLeast(0)
             renderExercise(list[currentIndex], list.size)
-            binding.rvPlayerExercises.scrollToPosition(currentIndex)
         }
 
-        binding.btnNext.setOnClickListener {
+        btnNext.setOnClickListener {
             val list = currentExercises
             if (list.isEmpty()) return@setOnClickListener
             currentIndex = (currentIndex + 1).coerceAtMost(list.lastIndex)
             renderExercise(list[currentIndex], list.size)
-            binding.rvPlayerExercises.scrollToPosition(currentIndex)
         }
     }
 
-    private fun renderExercise(exercise: Exercise?, total: Int) {
+    private fun renderExercise(exercise: Exercise?, total: Int) = with(binding) {
         if (exercise == null || total <= 0) {
-            binding.tvPlayerTimer.text = getString(com.fitness.workout.R.string.timer_default)
-            binding.tvPlayerCalories.text = getString(com.fitness.workout.R.string.calories_format, 0)
-            binding.tvPlayerIndex.text = "0/0"
-            binding.btnPlayerPlay.isEnabled = false
+            tvPlayerTimer.text = getString(com.fitness.workout.R.string.timer_default)
+            tvPlayerCalories.text = getString(com.fitness.workout.R.string.calories_format, 0)
+            tvPlayerIndex.text = getString(R.string.player_index_format, 0, 0)
+            btnPlayerPlay.isEnabled = false
+            stopAndHideVideo()
             return
         }
-        binding.tvPlayerTimer.text = exercise.durationSec.toDurationString()
-        binding.tvPlayerCalories.text = getString(com.fitness.workout.R.string.calories_format, exercise.calories)
-        binding.tvPlayerIndex.text = "${currentIndex + 1}/$total"
-        binding.btnPlayerPlay.isEnabled = true
+
+        tvPlayerTimer.text = exercise.durationSec.toDurationString()
+        tvPlayerCalories.text = getString(com.fitness.workout.R.string.calories_format, exercise.calories)
+        tvPlayerIndex.text = getString(R.string.player_index_format, currentIndex + 1, total)
+        btnPlayerPlay.isEnabled = true
+
+        setVideoForExercise(exercise)
+    }
+
+    @SuppressLint("DiscouragedApi")
+    private fun setVideoForExercise(exercise: Exercise) = with(binding) {
+        val videoName = exercise.videoResName.takeIf { it.isNotBlank() } ?: run {
+            stopAndHideVideo()
+            return@run
+        }
+
+        val resId = resources.getIdentifier(videoName.toString(), "raw", requireContext().packageName)
+        if (resId == 0) {
+            stopAndHideVideo()
+            return@with
+        }
+
+        val uri = Uri.parse("android.resource://${requireContext().packageName}/$resId")
+        videoPlayer.apply {
+            visibility = View.VISIBLE
+            setVideoURI(uri)
+            setMediaController(null)
+            setOnPreparedListener { mp ->
+                mp.isLooping = true
+                mp.start()
+            }
+        }
+    }
+
+    private fun togglePlayPause() = with(binding) {
+        if (videoPlayer.visibility != View.VISIBLE) return
+        if (videoPlayer.isPlaying) videoPlayer.pause() else videoPlayer.start()
+    }
+
+    private fun stopAndHideVideo() = runCatching {
+        binding.videoPlayer.stopPlayback()
+    }.also {
+        binding.videoPlayer.visibility = View.GONE
+    }
+
+    override fun onPause() {
+        super.onPause()
+        if (_binding != null && binding.videoPlayer.isPlaying) binding.videoPlayer.pause()
     }
 
     override fun onDestroyView() {
         super.onDestroyView()
+        runCatching { binding.videoPlayer.stopPlayback() }
         _binding = null
     }
 }

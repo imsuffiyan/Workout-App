@@ -1,3 +1,5 @@
+// Exercise detail: shows single exercise info.
+// Title, description, and meta shown.
 package com.fitness.workout.ui.workouts
 
 import android.os.Bundle
@@ -5,7 +7,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
-import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.fitness.workout.R
 import com.fitness.workout.databinding.FragmentExerciseDetailBinding

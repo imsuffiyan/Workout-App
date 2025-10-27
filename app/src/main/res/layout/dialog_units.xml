@@ -81,7 +81,7 @@
             android:layout_weight="1"
             android:layout_height="wrap_content"
             android:text="@string/save"
-            android:backgroundTint="#3F51B5"
+            android:backgroundTint="@color/accent_orange"
             android:textColor="#FFFFFF" />
 
     </LinearLayout>
